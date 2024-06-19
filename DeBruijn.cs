@@ -19,12 +19,29 @@ namespace DeBruijn {
             */
 
             Console.WriteLine("Enter k: ");
-            string k = Console.ReadLine();
-            string[] kmers = IsolateKMers(k, 3);
+            string sequence = Console.ReadLine();
+            int k = 3;
 
+            // k-mers
+            string[] kmers = RemoveDuplicates(IsolateKMers(sequence, k));
+
+            /*
             foreach (string kmer in kmers) {
                 Console.WriteLine(kmer);
             }
+            */
+
+            // (k-1)-mers
+            string[] k1mers = RemoveDuplicates(IsolateKMers(sequence, k - 1));
+
+            /*
+            Console.WriteLine(k1mers.Length);
+
+            foreach (string kmer in k1mers) {
+                Console.WriteLine(kmer);
+            }
+            */
+
             Console.ReadLine();
         }
 
@@ -42,6 +59,44 @@ namespace DeBruijn {
                 kmers[i] = builder.ToString();
             }
             return kmers;
+        }
+
+        static string[] RemoveDuplicates(string[] kmers) {
+            // Allocate a new array to store the unique kmers. Need to know the size
+            // of the new array.
+
+            // O(2 * n^2)
+            int size = 0;
+
+            for (int i = 0; i < kmers.Length; i++) {
+                bool isUnique = true;
+                for (int j = i; j < kmers.Length; j++) {
+                    if (i != j && kmers[i] == kmers[j]) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+                if (isUnique) {
+                    size++;
+                }
+            }
+            Console.WriteLine(size);
+
+            string[] uniqueKmers = new string[size];
+
+            for (int i = 0, j = 0; i < kmers.Length; i++) {
+                bool isUnique = true;
+                for (int k = 0; k < uniqueKmers.Length; k++) {
+                    if (i != k && kmers[i] == uniqueKmers[k]) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+                if (isUnique) {
+                    uniqueKmers[j++] = kmers[i];
+                }
+            }
+            return uniqueKmers;
         }
 
         static Graph GenerateGraph() {

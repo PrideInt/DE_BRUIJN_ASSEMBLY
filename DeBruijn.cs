@@ -23,7 +23,7 @@ namespace DeBruijn {
             int k = 3;
 
             // k-mers
-            string[] kmers = RemoveDuplicates(IsolateKMers(sequence, k));
+            string[] kmers = IsolateKMers(sequence, k);
 
             /*
             foreach (string kmer in kmers) {
@@ -32,7 +32,7 @@ namespace DeBruijn {
             */
 
             // (k-1)-mers
-            string[] k1mers = RemoveDuplicates(IsolateKMers(sequence, k - 1));
+            string[] k1mers = IsolateKMers(sequence, k - 1);
 
             /*
             Console.WriteLine(k1mers.Length);
@@ -58,7 +58,7 @@ namespace DeBruijn {
                 }
                 kmers[i] = builder.ToString();
             }
-            return kmers;
+            return RemoveDuplicates(kmers);
         }
 
         static string[] RemoveDuplicates(string[] kmers) {
@@ -99,7 +99,22 @@ namespace DeBruijn {
             return uniqueKmers;
         }
 
+        // TODO: Implement the following methods
+
+        // Generate the de Bruijn graph
         static Graph GenerateGraph() {
+            return null;
+        }
+        // Function to see if there are overlaps between the k-mers
+        static boolean Overlap() {
+            return false;
+        }
+        // Function to find the Eulerian path
+        static Path EulerianPath() {
+            return null;
+        }
+        // Function to find the Hamiltonian path
+        static Path HamiltonianPath() {
             return null;
         }
     }
@@ -173,6 +188,33 @@ namespace DeBruijn {
         }
         public void Display() {
             Console.WriteLine(from.data + " -> " + to.data);
+        }
+    }
+    class Path {
+        public Node[] path;
+        public int size;
+
+        public Path() {
+            path = new Node[100];
+            size = 0;
+        }
+        public Path(int n) {
+            path = new Node[n];
+            size = 0;
+        }
+        public void AddNode(Node n) {
+            path[size++] = n;
+        }
+        public void Display() {
+            var builder = new System.Text.StringBuilder();
+            for (int i = 0; i < size; i++) {
+                if (i == size - 1) {
+                    builder.Append(path[i].data);
+                } else {
+                    builder.Append(path[i].data + " -> ");
+                }
+            }
+            Console.WriteLine(builder.ToString());
         }
     }
 }

@@ -8,8 +8,9 @@ Read Compeau et. al's paper for more info: https://www.ncbi.nlm.nih.gov/pmc/arti
 
 ## De Bruijn Graphs
 
-An edge-centric de Bruijn graph is a cyclic Eulerian and Hamiltonian graph in which there exists `n^k` nodes which consists of every length-`k`
-substrings, *k-mers* assigned to each edge and a *(k-1)-mer* assigned to each node.
+An edge-centric de Bruijn graph is a cyclic Eulerian and Hamiltonian graph in which there exists `n^k` nodes (where `n` is the set of symbols;
+in nucleotide sequences, this will be `2`)
+which consists of every length-`k` substrings, *k-mers* assigned to each edge and a *(k-1)-mer* assigned to each node.
 
 > Finding a Hamiltonian cycle in our overlap graph is NP-complete, so to avoid solving problems of NP-completeness, we can alternatively observe
 > an algorithmic approach to finding Eulerian cycles instead, which are solvable in linear time. De Bruijn graphs are nice here.
@@ -28,12 +29,14 @@ CGT
 GTG
 TGC
 GCA
+CAA
+AAT
 ```
 
-(Which we can represent with `E = { e(ATG), e(TGG), e(GGC), e(GCG), e(CGT), e(GTG), e(TGC), e(GCA) }`, where `e` is an `Edge`
+(Which we can represent with `E = { e(ATG), e(TGG), e(GGC), e(GCG), e(CGT), e(GTG), e(TGC), e(GCA), e(CAA), e(AAT) }`, where `e` is an `Edge`
 object referencing a *k-mer* sequence in our code, assigning these weights to each respective edge in edges `E`)
 
-and our *(k-1)-mers* are `V = { v(AT), v(TG), v(GG), v(GC), v(CA), v(CG), v(GT) }`.
+and our *(k-1)-mers* are `V = { v(AT), v(TG), v(GG), v(GC), v(CG), v(GT), v(CA), v(AA) }`, where `v` is a `Node` object.
 
 If an overlap exists between 2 nodes in our reads by `k - 2`, we have a *k-mer* and we can connect those nodes together with an edge!
 

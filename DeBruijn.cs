@@ -50,6 +50,21 @@ namespace DeBruijn {
                 Console.WriteLine(kmer);
             }
             Console.WriteLine();
+
+            // De Bruijn graph
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("De Bruijn graph: ");
+            Console.ResetColor();
+
+            Graph graph = GenerateGraph(sequence, k);
+
+            for (int i = 0; i < graph.v; i++) {
+                graph.vertices[i].Display();
+            }
+            for (int i = 0; i < graph.e; i++) {
+                graph.edges[i].Display();
+            }
         }
 
         static string[] IsolateKMers(string k, int length) {
@@ -110,7 +125,25 @@ namespace DeBruijn {
 
         // Generate the de Bruijn graph
         static Graph GenerateGraph(String sequence, int k) {
-            return null;
+            string[] kmers = IsolateKMers(sequence, k);
+            string[] k1mers = IsolateKMers(sequence, k - 1);
+
+            Graph graph = new(k1mers.Length);
+
+            // Add vertices
+            // Begin first branch
+            graph.AddNode(k1mers[k1mers.Length - 2]);
+            graph.AddNode(k1mers[k1mers.Length - 1]);
+
+            for (int i = 0; i < k1mers.Length - 2; i++) {
+                graph.AddNode(k1mers[i]);
+            }
+            // Add edges
+            for (int i = 0; i < k1mers.Length - 1; i++) {
+                graph.AddEdge(graph.vertices[i], graph.vertices[i + 1]);
+            }
+            // TODO: Need to link (k-1)-mers together appropriately/non-naively
+            return graph;
         }
         // Function to see if there are overlaps between the k-mers
         static bool Overlap() {

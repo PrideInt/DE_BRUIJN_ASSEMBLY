@@ -18,31 +18,38 @@ namespace DeBruijn {
             graph.edges[0].Display();
             */
 
-            Console.WriteLine("Enter k: ");
+            Console.WriteLine("Enter Sequence k: ");
             string sequence = Console.ReadLine();
             int k = 3;
 
+            Console.WriteLine();
+
             // k-mers
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("k-mers: ");
+            Console.ResetColor();
+
             string[] kmers = IsolateKMers(sequence, k);
 
-            /*
             foreach (string kmer in kmers) {
                 Console.WriteLine(kmer);
             }
-            */
+            Console.ResetColor();
+            Console.WriteLine();
 
             // (k-1)-mers
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("(k-1)-mers: ");
+            Console.ResetColor();
+
             string[] k1mers = IsolateKMers(sequence, k - 1);
 
-            /*
-            Console.WriteLine(k1mers.Length);
+            // Console.WriteLine(k1mers.Length);
 
             foreach (string kmer in k1mers) {
                 Console.WriteLine(kmer);
             }
-            */
-
-            Console.ReadLine();
+            Console.WriteLine();
         }
 
         static string[] IsolateKMers(string k, int length) {
@@ -80,7 +87,7 @@ namespace DeBruijn {
                     size++;
                 }
             }
-            Console.WriteLine(size);
+            // Console.WriteLine(size);
 
             string[] uniqueKmers = new string[size];
 
@@ -102,11 +109,11 @@ namespace DeBruijn {
         // TODO: Implement the following methods
 
         // Generate the de Bruijn graph
-        static Graph GenerateGraph() {
+        static Graph GenerateGraph(String sequence, int k) {
             return null;
         }
         // Function to see if there are overlaps between the k-mers
-        static boolean Overlap() {
+        static bool Overlap() {
             return false;
         }
         // Function to find the Eulerian path
@@ -120,7 +127,7 @@ namespace DeBruijn {
     }
 
     class Graph {
-        public Node head, tail;
+        public Node? head, tail;
         public int size;
         public int v, e;
 
@@ -138,7 +145,7 @@ namespace DeBruijn {
             edges = new Edge[n];
         }
 
-        public void AddNode(int data) {
+        public void AddNode(String data) {
             Node n = new(data) {
                 data = data
             };
@@ -151,33 +158,44 @@ namespace DeBruijn {
             vertices[v++] = n;
             size++;
         }
-        public void AddEdge(Node from, Node to) {
-            Edge edge = new(from, to);
+        public void AddEdge(Node from, Node to, Edge.Weight w) {
+            Edge edge = new(from, to, w);
             from.AddNext(to);
             edges[e++] = edge;
         }
+        public void AddEdge(Node from, Node to) {
+            AddEdge(from, to, null);
+        }
     }
     class Node {
-        public Node next, prev;
-        public int data;
+        public Node? next, prev;
+        public String data;
 
         public Node() {
             next = prev = null;
         }
-        public Node(int data) : this() {
+        public Node(String data) : this() {
             this.data = data;
         }
         public void AddNext(Node n) {
             next = n;
             n.prev = this;
         }
+        public int Value() {
+            try {
+                return int.Parse(data);
+            } catch (FormatException) {
+                return -1;
+            }
+        }
         public void Display() {
             Console.WriteLine(data);
         }
     }
     class Edge {
-        public Node from;
-        public Node to;
+        public Node? from;
+        public Node? to;
+        public Weight? weight;
 
         public Edge() {
             from = to = null;
@@ -185,9 +203,39 @@ namespace DeBruijn {
         public Edge(Node from, Node to) {
             this.from = from;
             this.to = to;
+            this.weight = null;
+        }
+        public Edge(Node from, Node to, Weight w) {
+            this.from = from;
+            this.to = to;
+            this.weight = w;
         }
         public void Display() {
-            Console.WriteLine(from.data + " -> " + to.data);
+            if (weight != null) {
+                Console.WriteLine(from.data + " -> " + to.data + " : " + weight.GetWeight());
+            } else {
+                Console.WriteLine(from.data + " -> " + to.data);
+            }
+        }
+
+        public class Weight {
+            public String weight;
+            public Weight() {
+                weight = "";
+            }
+            public Weight(String w) {
+                weight = w;
+            }
+            public String GetWeight() {
+                return weight;
+            }
+            public int Value() {
+                try {
+                    return int.Parse(weight);
+                } catch (FormatException) {
+                    return -1;
+                }
+            }
         }
     }
     class Path {

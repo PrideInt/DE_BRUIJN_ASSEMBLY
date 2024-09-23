@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace DeBruijn {
     class DeBruijn {
@@ -124,30 +125,60 @@ namespace DeBruijn {
         // TODO: Implement the following methods
 
         // Generate the de Bruijn graph
-        static Graph GenerateGraph(String sequence, int k) {
+        static Graph GenerateGraph(string sequence, int k) {
             string[] kmers = IsolateKMers(sequence, k);
             string[] k1mers = IsolateKMers(sequence, k - 1);
 
+            Dictionary<string, List<string>> table = new(kmers.Length);
+
+            for (int i = 0; i < k1mers.Length; i++) {
+                string k1mer = k1mers[i];
+
+                for (int j = 0; j < kmers.Length; j++) {
+                    if (Overlap(k1mer, kmers[j])) {
+                        string overlap = GetOverlap(k1mer, kmers[j]);
+
+                        if (table.ContainsKey(k1mer)) {
+                            table[k1mer].Add(overlap);
+                        } else {
+                            table.Add(k1mer, [overlap]);
+                        }
+                    }
+                }
+            }
             Graph graph = new(k1mers.Length);
 
             // Add vertices
-            // Begin first branch
-            graph.AddNode(k1mers[k1mers.Length - 2]);
-            graph.AddNode(k1mers[k1mers.Length - 1]);
-
-            for (int i = 0; i < k1mers.Length - 2; i++) {
+            for (int i = 0; i < k1mers.Length; i++) {
                 graph.AddNode(k1mers[i]);
             }
             // Add edges
-            for (int i = 0; i < k1mers.Length - 1; i++) {
-                graph.AddEdge(graph.vertices[i], graph.vertices[i + 1]);
+            // TODO: This is O(n^3), however, building a De Bruijn graph should take O(n) time.
+            for (int i = 0; i < k1mers.Length; i++) {
+                List<string> values = table[k1mers[i]];
+
+                foreach (string value in values) {
+                    for (int j = 0; j < graph.vertices.Length; j++) {
+                        if (graph.vertices[j].data == value) {
+                            graph.AddEdge(graph.vertices[i], graph.vertices[j]);
+                        }
+                    }
+                }
             }
-            // TODO: Need to link (k-1)-mers together appropriately/non-naively
             return graph;
         }
         // Function to see if there are overlaps between the k-mers
-        static bool Overlap() {
+        static bool Overlap(string k1mer, string kmer) {
+            if (kmer.Substring(0, k1mer.Length) == k1mer) {
+                return true;
+            }
             return false;
+        }
+        static string GetOverlap(string k1mer, string kmer) {
+            if (Overlap(k1mer, kmer)) {
+                return kmer.Substring(1, k1mer.Length);
+            }
+            return "";
         }
         // Function to find the Eulerian path
         static Path EulerianPath() {
@@ -175,10 +206,10 @@ namespace DeBruijn {
 
         public Graph(int n) : this() {
             vertices = new Node[n];
-            edges = new Edge[n];
+            edges = new Edge[n * 2];
         }
 
-        public void AddNode(String data) {
+        public void AddNode(string data) {
             Node n = new(data) {
                 data = data
             };
@@ -202,12 +233,12 @@ namespace DeBruijn {
     }
     class Node {
         public Node? next, prev;
-        public String data;
+        public string data;
 
         public Node() {
             next = prev = null;
         }
-        public Node(String data) : this() {
+        public Node(string data) : this() {
             this.data = data;
         }
         public void AddNext(Node n) {
@@ -252,14 +283,14 @@ namespace DeBruijn {
         }
 
         public class Weight {
-            public String weight;
+            public string weight;
             public Weight() {
                 weight = "";
             }
-            public Weight(String w) {
+            public Weight(string w) {
                 weight = w;
             }
-            public String GetWeight() {
+            public string GetWeight() {
                 return weight;
             }
             public int Value() {

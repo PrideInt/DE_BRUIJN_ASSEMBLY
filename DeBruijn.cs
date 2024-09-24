@@ -60,9 +60,20 @@ namespace DeBruijn {
 
             Graph graph = GenerateGraph(sequence, k);
 
+            // Display vertices
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("\nVertices: ");
+            Console.ResetColor();
+
             for (int i = 0; i < graph.v; i++) {
                 graph.vertices[i].Display();
             }
+
+            // Display edges
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("\nEdges: ");
+            Console.ResetColor();
+
             for (int i = 0; i < graph.e; i++) {
                 graph.edges[i].Display();
             }
@@ -160,7 +171,9 @@ namespace DeBruijn {
                 foreach (string value in values) {
                     for (int j = 0; j < graph.vertices.Length; j++) {
                         if (graph.vertices[j].data == value) {
-                            graph.AddEdge(graph.vertices[i], graph.vertices[j]);
+                            string kmerWeight = graph.vertices[i].data.Substring(0, graph.vertices[i].data.Length - 1) + "" + graph.vertices[j].data;
+
+                            graph.AddEdge(graph.vertices[i], graph.vertices[j], new Edge.Weight(kmerWeight));
                         }
                     }
                 }
@@ -176,7 +189,7 @@ namespace DeBruijn {
         }
         static string GetOverlap(string k1mer, string kmer) {
             if (Overlap(k1mer, kmer)) {
-                return kmer.Substring(1, k1mer.Length);
+                return kmer.Substring(kmer.Length - k1mer.Length, k1mer.Length);
             }
             return "";
         }

@@ -77,6 +77,13 @@ namespace DeBruijn {
             for (int i = 0; i < graph.e; i++) {
                 graph.edges[i].Display();
             }
+
+            // Display adjacency list
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("\nAdjacency list: ");
+            Console.ResetColor();
+
+            graph.Display();
         }
 
         static string[] IsolateKMers(string k, int length) {
@@ -194,12 +201,12 @@ namespace DeBruijn {
             return "";
         }
         // Function to find the Eulerian path
-        static Path EulerianPath() {
-            return null;
+        static Path EulerianPath(Graph graph) {
+            return Path.Fleurys(graph);
         }
         // Function to find the Hamiltonian path
-        static Path HamiltonianPath() {
-            return null;
+        static Path HamiltonianPath(Graph graph) {
+            return Path.Backtracking(graph);
         }
     }
 
@@ -210,6 +217,8 @@ namespace DeBruijn {
 
         public Node[] vertices;
         public Edge[] edges;
+
+        public Dictionary<Node, List<Edge>> adjList = [];
 
         public Graph() {
             head = tail = null;
@@ -242,6 +251,30 @@ namespace DeBruijn {
         }
         public void AddEdge(Node from, Node to) {
             AddEdge(from, to, null);
+        }
+        public Dictionary<Node, List<Edge>> GetAdjList() {
+            for (int i = 0; i < vertices.Length; i++) {
+                List<Edge> neighbors = new();
+
+                for (int j = 0; j < edges.Length; j++) {
+                    if (edges[j] != null && edges[j].From() != null && (edges[j].From() == vertices[i])) {
+                        neighbors.Add(edges[j]);
+                    }
+                }
+                adjList.Add(vertices[i], neighbors);
+            }
+            return adjList;
+        }
+        public void Display() {
+            Dictionary<Node, List<Edge>> table = GetAdjList();
+
+            foreach (KeyValuePair<Node, List<Edge>> pair in table) {
+                Console.Write(pair.Key.data + " -> ");
+                foreach (Edge edge in pair.Value) {
+                    Console.Write(edge.To().data + " ");
+                }
+                Console.WriteLine();
+            }
         }
     }
     class Node {
@@ -294,6 +327,12 @@ namespace DeBruijn {
                 Console.WriteLine(from.data + " -> " + to.data);
             }
         }
+        public Node From() {
+            return from;
+        }
+        public Node To() {
+            return to;
+        }
 
         public class Weight {
             public string weight;
@@ -340,6 +379,35 @@ namespace DeBruijn {
                 }
             }
             Console.WriteLine(builder.ToString());
+        }
+
+        /*
+        Let's use Fleury's algortihm to find the Eulerian path.
+        */
+        public static Path Fleurys(Dictionary<Node, List<Edge>> list) {
+            return null;
+        }
+        public static Path Fleurys(Graph graph) {
+            Dictionary<Node, List<Edge>> list = graph.GetAdjList();
+            return null;
+        }
+        /*
+        Let's use the Backtracking algorithm to find the Hamiltonian path.
+        */
+        public static Path Backtracking(Dictionary<Node, List<Edge>> list) {
+            return null;
+        }
+        public static Path Backtracking(Graph graph) {
+            Dictionary<Node, List<Edge>> list = graph.GetAdjList();
+            return null;
+        }
+    }
+    class Pair<T, V>(T key, V value) {
+        public T key = key;
+        public V value = value;
+
+        static Pair<T, V> Of(T key, V value) {
+            return new Pair<T, V>(key, value);
         }
     }
 }

@@ -54,3 +54,9 @@ which each read is represented by a node and overlap between reads is represente
 
 Construction of de Bruijn graphs is very popularly used in de novo assembly, in which we create contigs from scratch, and understanding
 the properties of dBGs can allow us to analyze the computation behind assembling sequences together.
+
+## Example Output
+
+> Testing above stated sequence: `ATGGCGTGCA`
+
+![Screenshot 2024-09-24 180455](https://github.com/user-attachments/assets/efe8d220-8726-4b46-8879-fcc5a7ba2ada)

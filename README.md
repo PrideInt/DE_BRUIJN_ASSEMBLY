@@ -42,7 +42,7 @@ If an overlap exists between 2 nodes in our reads by `k - 2`, we have a *k-mer* 
 
 ## Genome Assembly
 
-<img src="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5531759/bin/nihms329513f2.jpg" width="80%"/>
+<img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/cc50/5531759/91350dda5ab7/nihms329513f2.jpg" width="80%"/>
 
 *Pulled from [Why are de Bruijn graphs useful for genome assembly?](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5531759/)*
 
